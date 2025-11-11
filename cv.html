@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Magellan Devoue</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .cv-container {
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        #cv-content {
+            padding: 50px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 20px;
+            color: #764ba2;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: 700;
+        }
+        
+        .profile-text {
+            line-height: 1.8;
+            color: #555;
+            text-align: justify;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 20px;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        
+        .item-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .item-date {
+            font-size: 14px;
+            color: #764ba2;
+            font-weight: 600;
+        }
+        
+        .item-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        
+        .item-description {
+            line-height: 1.6;
+            color: #555;
+            padding-left: 20px;
+        }
+        
+        .item-description li {
+            margin-bottom: 5px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .skill-category {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .skill-category h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .skill-category p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .language-item {
+            text-align: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .language-item strong {
+            display: block;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .controls {
+                display: none;
+            }
+            .cv-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <button class="btn-download" onclick="downloadPDF()">
+                📥 Télécharger le CV en PDF
+            </button>
+        </div>
+        
+        <div class="cv-container">
+            <div id="cv-content">
+                <!-- Header -->
+                <div class="header">
+                    <h1>Magellan DEVOUE</h1>
+                    <div class="subtitle">Développeur Full Stack | Futur Expert IA & Data Science</div>
+                    <div class="contact-info">
+                        <span>📧 magellandevoue@gmail.com</span>
+                        <span>📱 +242 06 922 72 77</span>
+                        <span>📍 Brazzaville, Congo</span>
+                        <span>💼 GitHub: /Abdallah924-coder</span>
+                    </div>
+                </div>
+
+                <!-- Profil -->
+                <div class="section">
+                    <h2 class="section-title">🎯 Profil Professionnel</h2>
+                    <p class="profile-text">
+                        Développeur Full Stack autodidacte et passionné avec une expertise solide en développement web moderne. Spécialisé dans la création d'applications web complètes, du front-end au back-end, avec une forte orientation vers l'innovation technologique. Actuellement en transition vers l'Intelligence Artificielle et la Data Science, avec un intérêt marqué pour les technologies émergentes comme la blockchain et la cybersécurité. Maîtrise des frameworks JavaScript modernes et des architectures web évolutives.
+                    </p>
+                </div>
+
+                <!-- Compétences Techniques -->
+                <div class="section">
+                    <h2 class="section-title">💻 Compétences Techniques</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Front-End</h4>
+                            <p>HTML5, CSS3, JavaScript (ES6+), TypeScript, React.js, Vue.js, Tailwind CSS, Responsive Design</p>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Back-End</h4>
+                            <p>Node.js, Express.js, APIs RESTful, Authentification JWT, Gestion de sessions</p>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Bases de Données</h4>
+                            <p>MongoDB, MySQL, PostgreSQL, Firebase, Redis, Design de schémas</p>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Outils & DevOps</h4>
+                            <p>Git, GitHub, VS Code, Postman, npm/yarn, Docker (débutant), CI/CD (en apprentissage)</p>
+                        </div>
+                        <div class="skill-category">
+                            <h4>En Apprentissage</h4>
+                            <p>Python pour Data Science, Machine Learning, Pandas, NumPy, TensorFlow, Blockchain, Cybersécurité</p>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Soft Skills</h4>
+                            <p>Apprentissage autonome, Résolution de problèmes, Travail d'équipe, Gestion de projet, Communication</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expérience Professionnelle -->
+                <div class="section">
+                    <h2 class="section-title">💼 Expérience & Projets</h2>
+                    
+                    <div class="experience-item">
+                        <div class="item-header">
+                            <span class="item-title">Développeur Full Stack - Freelance</span>
+                            <span class="item-date">2023 - Présent</span>
+                        </div>
+                        <div class="item-subtitle">Projets Personnels et Clients - Brazzaville, Congo</div>
+                        <ul class="item-description">
+                            <li>Développement de plus de 5 applications web complètes avec React, Vue.js et Node.js</li>
+                            <li>Création d'interfaces utilisateur modernes et responsive avec Tailwind CSS</li>
+                            <li>Implémentation de systèmes d'authentification et de gestion d'utilisateurs</li>
+                            <li>Intégration d'APIs tierces et création d'APIs RESTful personnalisées</li>
+                            <li>Optimisation des performances et SEO des applications web</li>
+                            <li>Mise en place de bases de données MongoDB et MySQL pour divers projets</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="item-header">
+                            <span class="item-title">Projets de Transition vers la Data Science</span>
+                            <span class="item-date">2025 - Présent</span>
+                        </div>
+                        <ul class="item-description">
+                            <li>Apprentissage actif de Python pour la Data Science (Pandas, NumPy, Matplotlib)</li>
+                            <li>Réalisation de projets d'analyse de données et visualisation</li>
+                            <li>Exploration du Machine Learning avec Scikit-learn</li>
+                            <li>Participation à des défis Kaggle pour développer mes compétences</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formation -->
+                <div class="section">
+                    <h2 class="section-title">🎓 Formation Autodidacte</h2>
+                    
+                    <div class="education-item">
+                        <div class="item-header">
+                            <span class="item-title">Développement Web Full Stack</span>
+                            <span class="item-date">2023 - 2025</span>
+                        </div>
+                        <div class="item-subtitle">Formation en ligne (freeCodeCamp, Udemy, YouTube, Documentation officielle)</div>
+                        <ul class="item-description">
+                            <li>HTML, CSS, JavaScript avancé et frameworks modernes</li>
+                            <li>React.js, Vue.js, Node.js et Express.js</li>
+                            <li>Bases de données relationnelles et NoSQL</li>
+                            <li>Architecture web, APIs RESTful et bonnes pratiques</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="education-item">
+                        <div class="item-header">
+                            <span class="item-title">Data Science & Intelligence Artificielle</span>
+                            <span class="item-date">2025 - En cours</span>
+                        </div>
+                        <div class="item-subtitle">Cours en ligne (Coursera, DataCamp, Kaggle Learn)</div>
+                        <ul class="item-description">
+                            <li>Python pour la Data Science (Pandas, NumPy, Matplotlib, Seaborn)</li>
+                            <li>Introduction au Machine Learning et aux algorithmes</li>
+                            <li>Statistiques et probabilités pour la Data Science</li>
+                            <li>Visualisation de données et storytelling</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Projets Notables -->
+                <div class="section">
+                    <h2 class="section-title">🚀 Projets Notables</h2>
+                    
+                    <div class="experience-item">
+                        <div class="item-title">Application E-Commerce Complète</div>
+                        <ul class="item-description">
+                            <li>Plateforme de vente en ligne avec panier, système de paiement et gestion de produits</li>
+                            <li>Technologies: React, Node.js, Express, MongoDB, Stripe API</li>
+                            <li>Interface admin pour la gestion des commandes et des stocks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="item-title">Dashboard d'Analyse de Données</div>
+                        <ul class="item-description">
+                            <li>Application web de visualisation de données avec graphiques interactifs</li>
+                            <li>Technologies: Vue.js, Chart.js, Python (Flask), PostgreSQL</li>
+                            <li>Importation de fichiers CSV et génération de rapports automatiques</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="item-title">Portfolio Personnel Interactif</div>
+                        <ul class="item-description">
+                            <li>Site portfolio moderne avec animations et design responsive</li>
+                            <li>Technologies: HTML, CSS, JavaScript, Tailwind CSS</li>
+                            <li>Menu mobile avancé avec effets visuels et navigation fluide</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Langues -->
+                <div class="section">
+                    <h2 class="section-title">🌍 Langues</h2>
+                    <div class="languages-grid">
+                        <div class="language-item">
+                            <strong>Français</strong>
+                            <span>Langue maternelle</span>
+                        </div>
+                        <div class="language-item">
+                            <strong>Anglais</strong>
+                            <span>Intermédiaire (B1)</span>
+                        </div>
+                        <div class="language-item">
+                            <strong>Lingala</strong>
+                            <span>Courant</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Centres d'Intérêt -->
+                <div class="section">
+                    <h2 class="section-title">🎨 Centres d'Intérêt & Objectifs</h2>
+                    <p class="profile-text">
+                        <strong>Passions:</strong> Technologies émergentes (IA, Blockchain, Web3), Open Source, Veille technologique, Apprentissage continu, Résolution de problèmes complexes
+                        <br><br>
+                        <strong>Objectifs professionnels:</strong> Devenir expert en Data Science et Machine Learning, maîtriser la Cybersécurité et le Pentesting, développer des compétences en Blockchain et Smart Contracts, contribuer à des projets innovants combinant développement web et intelligence artificielle
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function downloadPDF() {
+            const button = document.querySelector('.btn-download');
+            button.textContent = '⏳ Génération du PDF...';
+            button.disabled = true;
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const element = document.getElementById('cv-content');
+                
+                // Capture de l'élément en image
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                // Ajouter la première page
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                // Ajouter des pages supplémentaires si nécessaire
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                // Télécharger le PDF
+                pdf.save('CV_Magellan_Devoue.pdf');
+                
+                button.textContent = '✅ PDF téléchargé !';
+                setTimeout(() => {
+                    button.textContent = '📥 Télécharger le CV en PDF';
+                    button.disabled = false;
+                }, 3000);
+            } catch (error) {
+                console.error('Erreur lors de la génération du PDF:', error);
+                button.textContent = '❌ Erreur - Réessayer';
+                setTimeout(() => {
+                    button.textContent = '📥 Télécharger le CV en PDF';
+                    button.disabled = false;
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
