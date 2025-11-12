@@ -4,15 +4,23 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
-const sgMail = require('@sendgrid/mail');
+let sgMail = null;
 
 const PORT = process.env.PORT || 3000;
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'no-reply@example.com';
 const TO_EMAIL = process.env.TO_EMAIL || process.env.FROM_EMAIL || '';
 
+// Try to load SendGrid only if the user provided a key and the package is installed.
 if (SENDGRID_API_KEY) {
-  sgMail.setApiKey(SENDGRID_API_KEY);
+  try {
+    // require is wrapped so package is optional
+    sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(SENDGRID_API_KEY);
+  } catch (err) {
+    console.warn('SendGrid package not installed or failed to load. Email sending disabled.');
+    sgMail = null;
+  }
 }
 
 const app = express();
@@ -50,8 +58,8 @@ app.post('/api/contact', async (req, res) => {
       receivedAt: new Date().toISOString()
     };
 
-    // Try send via SendGrid if configured
-    if (SENDGRID_API_KEY && TO_EMAIL) {
+    // Try send via SendGrid if configured and package loaded
+    if (sgMail && TO_EMAIL) {
       const mail = {
         to: TO_EMAIL,
         from: FROM_EMAIL,
