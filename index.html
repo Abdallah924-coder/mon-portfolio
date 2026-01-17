@@ -4,254 +4,719 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio - Magellan Devoue | Data Scientist & IA Developer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animated-gradient {
-            background: linear-gradient(270deg, #667eea, #764ba2, #f093fb, #4facfe);
-            background-size: 800% 800%;
-            animation: gradient 15s ease infinite;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in { animation: fadeInUp 0.6s ease-out; }
-        .glow {
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .float { animation: float 3s ease-in-out infinite; }
-        .skill-hidden {
-            opacity: 0.3;
-            filter: blur(4px);
-            transition: all 0.5s ease;
-        }
-        .skill-visible {
-            opacity: 1;
-            filter: blur(0);
+        /* Reset et styles de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        /* Menu Mobile Avancé */
-        .mobile-menu-overlay {
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(55, 65, 81, 0.9));
-            backdrop-filter: blur(20px);
+        :root {
+            --primary-blue: #3b82f6;
+            --secondary-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --dark-bg: #111827;
+            --dark-card: #1f2937;
+            --text-light: #f3f4f6;
+            --text-gray: #9ca3af;
         }
         
-        .math-equation {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            font-family: 'Courier New', monospace;
-            color: rgba(59, 130, 246, 0.1);
-            font-size: 1.2rem;
-            pointer-events: none;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            transition: width 0.3s;
         }
         
-        .cyber-grid {
-            background-image: 
-                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Menu Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+            z-index: 1001;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-light);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: rgba(17, 24, 39, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 5rem 2rem 2rem;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+            overflow-y: auto;
+            border-left: 1px solid rgba(55, 65, 81, 0.5);
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: rgba(55, 65, 81, 0.3);
+        }
+        
+        .mobile-menu a:hover {
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            transform: translateX(-10px);
+        }
+        
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            z-index: 998;
+        }
+        
+        .menu-overlay.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .close-menu {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-menu:hover {
+            background: rgba(55, 65, 81, 0.5);
+        }
+        
+        /* Sections communes */
+        section {
+            padding: 5rem 1.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 { font-size: 3.5rem; }
+        h2 { font-size: 2.5rem; text-align: center; }
+        h3 { font-size: 1.8rem; }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+            padding: 5px;
+            position: relative;
+        }
+        
+        .hero-image-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--dark-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            transform: translateY(-3px);
+        }
+        
+        /* About Section */
+        .about {
+            background: rgba(31, 41, 55, 0.3);
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--dark-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(55, 65, 81, 0.5);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .skill-category {
+            background: var(--dark-card);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(55, 65, 81, 0.5);
+        }
+        
+        .skill-bar {
+            margin: 1rem 0;
+        }
+        
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .skill-progress {
+            height: 8px;
+            background: rgba(55, 65, 81, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            border-radius: 4px;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-blue), var(--secondary-purple));
+        }
+        
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .timeline-content {
+            background: var(--dark-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(55, 65, 81, 0.5);
+            width: 45%;
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+            border-radius: 50%;
+            border: 3px solid var(--dark-bg);
+        }
+        
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .project-card {
+            background: var(--dark-card);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(55, 65, 81, 0.5);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .project-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .project-content {
+            padding: 1.5rem;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+        
+        /* Contact */
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            background: var(--dark-card);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(55, 65, 81, 0.5);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(55, 65, 81, 0.3);
+            border: 1px solid rgba(55, 65, 81, 0.5);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(55, 65, 81, 0.5);
+            color: var(--text-gray);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+            }
+            
+            .timeline-dot {
+                left: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            section {
+                padding: 3rem 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white overflow-x-hidden">
+<body>
     <!-- Navigation -->
-    <nav class="fixed w-full bg-gray-900/95 backdrop-blur-md z-50 border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="#" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                   Magellan Devoue
-                </a>
-                <div id="menu-desktop" class="hidden md:flex space-x-8">
-                    <a href="#accueil" class="hover:text-blue-400 transition-colors duration-300">Accueil</a>
-                    <a href="#about" class="hover:text-blue-400 transition-colors duration-300">À Propos</a>
-                    <a href="#projets" class="hover:text-blue-400 transition-colors duration-300">Projets</a>
-                    <a href="#competences" class="hover:text-blue-400 transition-colors duration-300">Compétences</a>
-                    <a href="#parcours" class="hover:text-blue-400 transition-colors duration-300">Parcours</a>
-                    <a href="#contact" class="hover:text-blue-400 transition-colors duration-300">Contact</a>
-                </div>
-                <button id="menu-toggle" class="md:hidden text-white p-2 rounded-lg hover:bg-gray-800 transition-colors duration-300">
-                    <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Magellan Devoue</a>
+            
+            <div class="nav-links">
+                <a href="#accueil">Accueil</a>
+                <a href="#about">À Propos</a>
+                <a href="#competences">Compétences</a>
+                <a href="#parcours">Parcours</a>
+                <a href="#projets">Projets</a>
+                <a href="#contact">Contact</a>
+            </div>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
 
-    <!-- Menu Mobile Avancé -->
-    <div id="mobile-menu" class="fixed inset-0 z-40 hidden md:hidden">
-        <div class="mobile-menu-overlay w-full h-full relative cyber-grid">
-            <!-- Équations mathématiques en arrière-plan -->
-            <div class="math-equation top-10 left-5">∫ f(x) dx</div>
-            <div class="math-equation top-20 right-5">∇⋅E = ρ/ε₀</div>
-            <div class="math-equation bottom-20 left-10">σ = √(Σ(x-μ)²/N)</div>
-            <div class="math-equation bottom-10 right-10">e^(iπ) + 1 = 0</div>
-            <div class="math-equation top-1/2 left-1/4">∂²u/∂t² = c²∇²u</div>
-            <div class="math-equation top-1/3 right-1/4">H|ψ⟩ = E|ψ⟩</div>
-            
-            <div class="container mx-auto px-4 pt-20 pb-8 h-full flex flex-col">
-                <div class="flex justify-between items-center mb-8">
-                    <a href="#" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                        Magellan Devoue
-                    </a>
-                    <button id="close-menu" class="text-white p-2 rounded-lg hover:bg-gray-800 transition-colors duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="flex-1 flex flex-col justify-center space-y-8">
-                    <a href="#accueil" class="text-3xl font-bold text-center hover:text-blue-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-blue-500/10 to-purple-500/10 py-4 rounded-2xl border border-blue-500/20">
-                        Accueil
-                    </a>
-                    <a href="#about" class="text-3xl font-bold text-center hover:text-purple-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-purple-500/10 to-pink-500/10 py-4 rounded-2xl border border-purple-500/20">
-                        À Propos
-                    </a>
-                    <a href="#projets" class="text-3xl font-bold text-center hover:text-pink-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-pink-500/10 to-red-500/10 py-4 rounded-2xl border border-pink-500/20">
-                        Projets
-                    </a>
-                    <a href="#competences" class="text-3xl font-bold text-center hover:text-green-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-green-500/10 to-blue-500/10 py-4 rounded-2xl border border-green-500/20">
-                        Compétences
-                    </a>
-                    <a href="#parcours" class="text-3xl font-bold text-center hover:text-orange-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 py-4 rounded-2xl border border-orange-500/20">
-                        Parcours
-                    </a>
-                    <a href="#contact" class="text-3xl font-bold text-center hover:text-yellow-400 transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-yellow-500/10 to-red-500/10 py-4 rounded-2xl border border-yellow-500/20">
-                        Contact
-                    </a>
-                </div>
-                
-                <div class="text-center pt-8">
-                    <p class="text-gray-400 text-sm">🎯 Data Science • IA • Blockchain • Cybersécurité</p>
-                </div>
-            </div>
-        </div>
+    <!-- Menu Mobile -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#accueil">Accueil</a>
+        <a href="#about">À Propos</a>
+        <a href="#competences">Compétences</a>
+        <a href="#parcours">Parcours</a>
+        <a href="#projets">Projets</a>
+        <a href="#contact">Contact</a>
     </div>
 
     <!-- Hero Section -->
-    <section id="accueil" class="min-h-screen flex items-center justify-center px-4 pt-16">
-        <div class="max-w-6xl mx-auto text-center fade-in">
-            <div class="mb-8">
-                <div class="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 float glow">
-                    <div class="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
-                        <span class="text-4xl md:text-6xl">🧠</span>
+    <section id="accueil" class="hero">
+        <div class="container">
+            <div class="hero-content animate">
+                <div class="hero-image">
+                    <div class="hero-image-inner">
+                        <i class="fas fa-brain"></i>
                     </div>
                 </div>
-            </div>
-            <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold mb-4 px-4">
-                Salut, je suis <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Devoue</span>
-            </h1>
-            <p class="text-lg md:text-xl lg:text-2xl text-gray-400 mb-8 px-4">
-                Développeur Full Stack | Futur Expert IA & Data Science
-            </p>
-            <div class="flex flex-wrap justify-center gap-4 mb-12 px-4">
-                <button class="px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105 text-sm md:text-base">
-                    Voir mes projets
-                </button>
-                <a href="https://abdallah924-coder.github.io/mon-portfolio/cv.html" target="_blank" class="px-6 py-3 md:px-8 md:py-4 border-2 border-blue-500 rounded-full font-semibold hover:bg-blue-500/10 transition-all text-sm md:text-base inline-block">
-    Télécharger CV
-</a>
-            </div>
-            <div class="flex justify-center space-x-4 md:space-x-6">
-                <a href="https://github.com/Abdallah924-coder" class="w-10 h-10 md:w-12 md:h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 transition-all transform hover:scale-110">
-                    <i class="fab fa-github text-sm md:text-base"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/magellan-devoue-1438a3391?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="w-10 h-10 md:w-12 md:h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 transition-all transform hover:scale-110">
-                    <i class="fab fa-linkedin-in text-sm md:text-base"></i>
-                </a>
-                <a href="https://x.com/AbdAllah_coder1?t=aAxau2IF7_n04yQdbKgbUw&s=09" class="w-10 h-10 md:w-12 md:h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 transition-all transform hover:scale-110">
-                    <i class="fab fa-twitter text-sm md:text-base"></i>
-                </a>
-                <a href="#" class="w-10 h-10 md:w-12 md:h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 transition-all transform hover:scale-110">
-                    <i class="fab fa-kaggle text-sm md:text-base"></i>
-                </a>
+                
+                <h1>Salut, je suis <span class="gradient-text">Devoue</span></h1>
+                <p class="subtitle">Développeur Full Stack | Futur Expert IA & Data Science</p>
+                
+                <div class="hero-buttons">
+                    <a href="#projets" class="btn">Voir mes projets</a>
+                    <a href="https://abdallah924-coder.github.io/mon-portfolio/cv.html" target="_blank" class="btn btn-outline">Télécharger CV</a>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://github.com/Abdallah924-coder" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/magellan-devoue-1438a3391" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://x.com/AbdAllah_coder1" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" target="_blank">
+                        <i class="fab fa-kaggle"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-16 md:py-20 px-4 bg-gray-800/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 px-4">
-                À Propos de <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Moi</span>
-            </h2>
-            <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div class="space-y-6 order-2 md:order-1">
-                    <p class="text-base md:text-lg text-gray-300 leading-relaxed">
-                        Développeur Full Stack passionné par les technologies émergentes, je me spécialise actuellement dans les domaines de l'Intelligence Artificielle, de la Data Science et de la Blockchain. Mon objectif est de créer des solutions innovantes qui transforment les données en valeur.
-                    </p>
-                    <p class="text-base md:text-lg text-gray-300 leading-relaxed">
-                        Actuellement en transition vers les métiers de la Data, je combine mes compétences en développement avec une approche data-driven pour résoudre des problèmes complexes et créer des applications intelligentes.
-                    </p>
-                    <div class="grid grid-cols-2 gap-3 md:gap-4 pt-6">
-                        <div class="bg-gray-800 rounded-xl p-3 md:p-4 border border-gray-700">
-                            <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">5+</div>
-                            <div class="text-gray-400 text-sm md:text-base">Projets Web</div>
+    <section id="about" class="about">
+        <div class="container">
+            <h2>À Propos de <span class="gradient-text">Moi</span></h2>
+            <div class="about-content">
+                <div class="animate">
+                    <p>Développeur Full Stack passionné par les technologies émergentes, je me spécialise actuellement dans les domaines de l'Intelligence Artificielle, de la Data Science et de la Blockchain. Mon objectif est de créer des solutions innovantes qui transforment les données en valeur.</p>
+                    <p>Actuellement en transition vers les métiers de la Data, je combine mes compétences en développement avec une approche data-driven pour résoudre des problèmes complexes et créer des applications intelligentes.</p>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number">5+</div>
+                            <p>Projets Web</p>
                         </div>
-                        <div class="bg-gray-800 rounded-xl p-3 md:p-4 border border-gray-700">
-                            <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">2+</div>
-                            <div class="text-gray-400 text-sm md:text-base">Projets Data</div>
+                        <div class="stat-card">
+                            <div class="stat-number">2+</div>
+                            <p>Projets Data</p>
                         </div>
-                        <div class="bg-gray-800 rounded-xl p-3 md:p-4 border border-gray-700">
-                            <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">2+</div>
-                            <div class="text-gray-400 text-sm md:text-base">Années d'Expérience</div>
+                        <div class="stat-card">
+                            <div class="stat-number">2+</div>
+                            <p>Années d'Expérience</p>
                         </div>
-                        <div class="bg-gray-800 rounded-xl p-3 md:p-4 border border-gray-700">
-                            <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">100%</div>
-                            <div class="text-gray-400 text-sm md:text-base">En Apprentissage</div>
+                        <div class="stat-card">
+                            <div class="stat-number">100%</div>
+                            <p>En Apprentissage</p>
                         </div>
                     </div>
                 </div>
-                <div class="relative order-1 md:order-2">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl blur-3xl opacity-20"></div>
-                    <div class="relative rounded-3xl shadow-2xl bg-gray-800 p-6 md:p-8">
-                        <h3 class="text-xl md:text-2xl font-bold mb-4">Mon Parcours</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full mt-2 mr-3"></div>
-                                <div>
-                                    <h4 class="font-semibold text-base md:text-lg">Développeur Full Stack</h4>
-                                    <p class="text-gray-400 text-sm">Expertise actuelle en développement web</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-3 h-3 bg-purple-500 rounded-full mt-2 mr-3"></div>
-                                <div>
-                                    <h4 class="font-semibold text-base md:text-lg">Spécialisation Data Science</h4>
-                                    <p class="text-gray-400 text-sm">En cours d'apprentissage</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-3 h-3 bg-pink-500 rounded-full mt-2 mr-3"></div>
-                                <div>
-                                    <h4 class="font-semibold text-base md:text-lg">Expert IA & Machine Learning</h4>
-                                    <p class="text-gray-400 text-sm">Objectif à court terme</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mt-2 mr-3"></div>
-                                <div>
-                                    <h4 class="font-semibold text-base md:text-lg">Cybersécurité & Pentesting</h4>
-                                    <p class="text-gray-400 text-sm">Objectif à moyen terme</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-3 h-3 bg-orange-500 rounded-full mt-2 mr-3"></div>
-                                <div>
-                                    <h4 class="font-semibold text-base md:text-lg">Blockchain & Web 3.0</h4>
-                                    <p class="text-gray-400 text-sm">Objectif final</p>
-                                </div>
-                            </div>
+                
+                <div class="animate">
+                    <h3>Mon Parcours</h3>
+                    <div class="journey-list">
+                        <div class="journey-item">
+                            <div class="journey-dot"></div>
+                            <h4>Développeur Full Stack</h4>
+                            <p>Expertise actuelle en développement web</p>
+                        </div>
+                        <div class="journey-item">
+                            <div class="journey-dot"></div>
+                            <h4>Spécialisation Data Science</h4>
+                            <p>En cours d'apprentissage</p>
+                        </div>
+                        <div class="journey-item">
+                            <div class="journey-dot"></div>
+                            <h4>Expert IA & Machine Learning</h4>
+                            <p>Objectif à court terme</p>
+                        </div>
+                        <div class="journey-item">
+                            <div class="journey-dot"></div>
+                            <h4>Cybersécurité & Pentesting</h4>
+                            <p>Objectif à moyen terme</p>
+                        </div>
+                        <div class="journey-item">
+                            <div class="journey-dot"></div>
+                            <h4>Blockchain & Web 3.0</h4>
+                            <p>Objectif final</p>
                         </div>
                     </div>
                 </div>
@@ -260,288 +725,167 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="competences" class="py-16 md:py-20 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 px-4">
-                Mes <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Compétences</span>
-            </h2>
+    <section id="competences">
+        <div class="container">
+            <h2>Mes <span class="gradient-text">Compétences</span></h2>
+            <p class="text-center mb-8">Mes compétences actuelles en développement web et mes futures spécialisations en Data Science et IA.</p>
             
-            <div class="mb-8 md:mb-12 text-center px-4">
-                <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
-                    Mes compétences actuelles en développement web et mes futures spécialisations en Data Science et IA.
-                    Les compétences en grisé sont celles que je maîtriserai prochainement.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-8 md:gap-12 mb-12 md:mb-16">
-                <div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center">
-                        <span class="w-2 h-6 md:h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded mr-3"></span>
-                        Compétences Actuelles
-                    </h3>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">HTML/CSS</span>
-                                <span class="text-blue-400 text-sm md:text-base">95%</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style="width: 95%"></div>
-                            </div>
+            <div class="skills-grid">
+                <div class="skill-category animate">
+                    <h3>Compétences Actuelles</h3>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>HTML/CSS</span>
+                            <span>95%</span>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">JavaScript/TypeScript</span>
-                                <span class="text-blue-400 text-sm md:text-base">90%</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style="width: 90%"></div>
-                            </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 95%"></div>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">React/Vue.js</span>
-                                <span class="text-blue-400 text-sm md:text-base">88%</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style="width: 88%"></div>
-                            </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>JavaScript/TypeScript</span>
+                            <span>90%</span>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">Node.js/Express</span>
-                                <span class="text-blue-400 text-sm md:text-base">85%</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style="width: 85%"></div>
-                            </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>React/Vue.js</span>
+                            <span>88%</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 88%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>Node.js/Express</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 85%"></div>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center">
-                        <span class="w-2 h-6 md:h-8 bg-gradient-to-b from-purple-500 to-pink-600 rounded mr-3"></span>
-                        En Apprentissage
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="skill-hidden">
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">Python pour Data Science</span>
-                                <span class="text-purple-400 text-sm md:text-base">En cours</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 40%"></div>
-                            </div>
+                
+                <div class="skill-category animate">
+                    <h3>En Apprentissage</h3>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>Python pour Data Science</span>
+                            <span>40%</span>
                         </div>
-                        <div class="skill-hidden">
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">Machine Learning</span>
-                                <span class="text-purple-400 text-sm md:text-base">À venir</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 20%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-hidden">
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">Cybersécurité</span>
-                                <span class="text-purple-400 text-sm md:text-base">À venir</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 15%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-hidden">
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm md:text-base">Blockchain/Smart Contracts</span>
-                                <span class="text-purple-400 text-sm md:text-base">À venir</span>
-                            </div>
-                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 10%"></div>
-                            </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 40%"></div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="mt-8 md:mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                <div class="bg-gray-800 rounded-xl p-4 md:p-6 text-center border border-gray-700 hover:border-blue-500 transition-colors">
-                    <div class="text-2xl md:text-4xl mb-2 md:mb-3">🌐</div>
-                    <div class="font-semibold text-sm md:text-base">Développement Web</div>
-                </div>
-                <div class="bg-gray-800 rounded-xl p-4 md:p-6 text-center border border-gray-700 hover:border-purple-500 transition-colors skill-hidden">
-                    <div class="text-2xl md:text-4xl mb-2 md:mb-3">📊</div>
-                    <div class="font-semibold text-sm md:text-base">Data Science</div>
-                </div>
-                <div class="bg-gray-800 rounded-xl p-4 md:p-6 text-center border border-gray-700 hover:border-pink-500 transition-colors skill-hidden">
-                    <div class="text-2xl md:text-4xl mb-2 md:mb-3">🤖</div>
-                    <div class="font-semibold text-sm md:text-base">IA & ML</div>
-                </div>
-                <div class="bg-gray-800 rounded-xl p-4 md:p-6 text-center border border-gray-700 hover:border-orange-500 transition-colors skill-hidden">
-                    <div class="text-2xl md:text-4xl mb-2 md:mb-3">🔒</div>
-                    <div class="font-semibold text-sm md:text-base">Cybersécurité</div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>Machine Learning</span>
+                            <span>20%</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>Cybersécurité</span>
+                            <span>15%</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 15%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-info">
+                            <span>Blockchain/Smart Contracts</span>
+                            <span>10%</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 10%"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Learning Path Section -->
-    <section id="parcours" class="py-16 md:py-20 px-4 bg-gray-800/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 px-4">
-                Mon <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Parcours d'Apprentissage</span>
-            </h2>
+    <section id="parcours" class="about">
+        <div class="container">
+            <h2>Mon <span class="gradient-text">Parcours d'Apprentissage</span></h2>
             
-            <div class="relative">
-                <!-- Timeline pour mobile -->
-                <div class="md:hidden space-y-8">
-                    <div class="bg-gray-800 rounded-2xl p-6 border-l-4 border-blue-500">
-                        <div class="flex items-center mb-4">
-                            <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
-                            <h3 class="text-xl font-bold">Développeur Full Stack</h3>
-                        </div>
-                        <p class="text-gray-400 mb-4">Expertise actuelle en développement web et applications</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">HTML/CSS</span>
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">JavaScript</span>
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">React</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-800 rounded-2xl p-6 border-l-4 border-purple-500">
-                        <div class="flex items-center mb-4">
-                            <div class="w-4 h-4 bg-purple-500 rounded-full mr-3"></div>
-                            <h3 class="text-xl font-bold">Data Scientist</h3>
-                        </div>
-                        <p class="text-gray-400 mb-4">En cours d'apprentissage - Python, Pandas, Data Visualization</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Python</span>
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Pandas</span>
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">NumPy</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-800 rounded-2xl p-6 border-l-4 border-pink-500">
-                        <div class="flex items-center mb-4">
-                            <div class="w-4 h-4 bg-pink-500 rounded-full mr-3"></div>
-                            <h3 class="text-xl font-bold">Machine Learning Engineer</h3>
-                        </div>
-                        <p class="text-gray-400 mb-4">Prochaine étape - Modèles prédictifs, Scikit-learn, TensorFlow</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">Scikit-learn</span>
-                            <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">TensorFlow</span>
-                            <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">Keras</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-800 rounded-2xl p-6 border-l-4 border-green-500">
-                        <div class="flex items-center mb-4">
-                            <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
-                            <h3 class="text-xl font-bold">Expert Cybersécurité</h3>
-                        </div>
-                        <p class="text-gray-400 mb-4">Sécurité des systèmes, Pentesting, Cryptographie</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Kali Linux</span>
-                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Metasploit</span>
-                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Wireshark</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-800 rounded-2xl p-6 border-l-4 border-orange-500">
-                        <div class="flex items-center mb-4">
-                            <div class="w-4 h-4 bg-orange-500 rounded-full mr-3"></div>
-                            <h3 class="text-xl font-bold">Expert Blockchain & Web 3.0</h3>
-                        </div>
-                        <p class="text-gray-400 mb-4">Objectif final - Développement dApps, Smart Contracts</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Solidity</span>
-                            <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Ethereum</span>
-                            <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Web3.js</span>
+            <div class="timeline">
+                <div class="timeline-item animate">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Développeur Full Stack</h3>
+                        <p>Expertise actuelle en développement web et applications</p>
+                        <div class="project-tags">
+                            <span class="tag">HTML/CSS</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Timeline pour desktop -->
-                <div class="hidden md:block">
-                    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-blue-500 to-orange-600"></div>
-                    
-                    <div class="space-y-12">
-                        <!-- Current -->
-                        <div class="relative flex items-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <h3 class="text-2xl font-bold mb-2">Développeur Full Stack</h3>
-                                <p class="text-gray-400">Expertise actuelle en développement web et applications</p>
-                                <div class="mt-4 flex flex-wrap gap-2 justify-end">
-                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">HTML/CSS</span>
-                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">JavaScript</span>
-                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">React</span>
-                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">Node.js</span>
-                                </div>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 rounded-full border-4 border-gray-900"></div>
-                            <div class="w-1/2 pl-8"></div>
+                
+                <div class="timeline-item animate">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Data Scientist</h3>
+                        <p>En cours d'apprentissage - Python, Pandas, NumPy, Data Visualization</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Pandas</span>
+                            <span class="tag">NumPy</span>
+                            <span class="tag">Matplotlib</span>
                         </div>
-                        
-                        <!-- Next Step -->
-                        <div class="relative flex items-center">
-                            <div class="w-1/2 pr-8"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-purple-500 rounded-full border-4 border-gray-900"></div>
-                            <div class="w-1/2 pl-8">
-                                <h3 class="text-2xl font-bold mb-2">Data Scientist</h3>
-                                <p class="text-gray-400">En cours d'apprentissage - Python, Pandas, NumPy, Data Visualization</p>
-                                <div class="mt-4 flex flex-wrap gap-2">
-                                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Python</span>
-                                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Pandas</span>
-                                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">NumPy</span>
-                                    <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">Matplotlib</span>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item animate">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Machine Learning Engineer</h3>
+                        <p>Prochaine étape - Modèles prédictifs, Scikit-learn, TensorFlow</p>
+                        <div class="project-tags">
+                            <span class="tag">Scikit-learn</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">Keras</span>
+                            <span class="tag">PyTorch</span>
                         </div>
-                        
-                        <!-- Future Steps -->
-                        <div class="relative flex items-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <h3 class="text-2xl font-bold mb-2">Machine Learning Engineer</h3>
-                                <p class="text-gray-400">Prochaine étape - Modèles prédictifs, Scikit-learn, TensorFlow</p>
-                                <div class="mt-4 flex flex-wrap gap-2 justify-end">
-                                    <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">Scikit-learn</span>
-                                    <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">TensorFlow</span>
-                                    <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">Keras</span>
-                                    <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm">PyTorch</span>
-                                </div>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-pink-500 rounded-full border-4 border-gray-900"></div>
-                            <div class="w-1/2 pl-8"></div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item animate">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Expert Cybersécurité</h3>
+                        <p>Sécurité des systèmes, Pentesting, Cryptographie</p>
+                        <div class="project-tags">
+                            <span class="tag">Kali Linux</span>
+                            <span class="tag">Metasploit</span>
+                            <span class="tag">Wireshark</span>
+                            <span class="tag">Cryptographie</span>
                         </div>
-                        
-                        <div class="relative flex items-center">
-                            <div class="w-1/2 pr-8"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-500 rounded-full border-4 border-gray-900"></div>
-                            <div class="w-1/2 pl-8">
-                                <h3 class="text-2xl font-bold mb-2">Expert Cybersécurité</h3>
-                                <p class="text-gray-400">Sécurité des systèmes, Pentesting, Cryptographie</p>
-                                <div class="mt-4 flex flex-wrap gap-2">
-                                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Kali Linux</span>
-                                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Metasploit</span>
-                                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Wireshark</span>
-                                    <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">Cryptographie</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="relative flex items-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <h3 class="text-2xl font-bold mb-2">Expert Blockchain & Web 3.0</h3>
-                                <p class="text-gray-400">Objectif final - Développement dApps, Smart Contracts, Décentralisation</p>
-                                <div class="mt-4 flex flex-wrap gap-2 justify-end">
-                                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Solidity</span>
-                                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Ethereum</span>
-                                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">Web3.js</span>
-                                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">dApps</span>
-                                </div>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-orange-500 rounded-full border-4 border-gray-900"></div>
-                            <div class="w-1/2 pl-8"></div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item animate">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Expert Blockchain & Web 3.0</h3>
+                        <p>Objectif final - Développement dApps, Smart Contracts, Décentralisation</p>
+                        <div class="project-tags">
+                            <span class="tag">Solidity</span>
+                            <span class="tag">Ethereum</span>
+                            <span class="tag">Web3.js</span>
+                            <span class="tag">dApps</span>
                         </div>
                     </div>
                 </div>
@@ -550,61 +894,56 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projets" class="py-16 md:py-20 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 px-4">
-                Mes <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Projets</span>
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <div class="group bg-gray-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all transform hover:-translate-y-2">
-                    <div class="h-40 md:h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-code text-white/20 text-4xl md:text-6xl"></i>
-                        </div>
+    <section id="projets">
+        <div class="container">
+            <h2>Mes <span class="gradient-text">Projets</span></h2>
+            
+            <div class="projects-grid">
+                <div class="project-card animate">
+                    <div class="project-image">
+                        <i class="fas fa-code"></i>
                     </div>
-                    <div class="p-4 md:p-6">
-                        <h3 class="text-lg md:text-xl font-bold mb-2">Application E-Commerce</h3>
-                        <p class="text-gray-400 text-sm md:text-base mb-4">Plateforme e-commerce complète avec système de paiement et gestion des stocks.</p>
-                        <div class="flex flex-wrap gap-1 md:gap-2 mb-4">
-                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs md:text-sm">React</span>
-                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs md:text-sm">Node.js</span>
-                            <span class="px-2 py-1 bg-pink-500/20 text-pink-400 rounded-full text-xs md:text-sm">MongoDB</span>
+                    <div class="project-content">
+                        <h3>Application E-Commerce</h3>
+                        <p>Plateforme e-commerce complète avec système de paiement et gestion des stocks.</p>
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">MongoDB</span>
                         </div>
-                        <button class="text-blue-400 font-semibold hover:text-blue-300 transition-colors text-sm md:text-base">Voir le projet →</button>
+                        <button class="btn btn-outline" style="margin-top: 1rem;">Voir le projet →</button>
                     </div>
                 </div>
-                <div class="group bg-gray-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all transform hover:-translate-y-2">
-                    <div class="h-40 md:h-48 bg-gradient-to-br from-purple-500 to-pink-600 relative overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-chart-line text-white/20 text-4xl md:text-6xl"></i>
-                        </div>
+                
+                <div class="project-card animate">
+                    <div class="project-image">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="p-4 md:p-6">
-                        <h3 class="text-lg md:text-xl font-bold mb-2">Analyse de Données</h3>
-                        <p class="text-gray-400 text-sm md:text-base mb-4">Scripts Python pour l'analyse et la visualisation de jeux de données.</p>
-                        <div class="flex flex-wrap gap-1 md:gap-2 mb-4">
-                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs md:text-sm">Python</span>
-                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs md:text-sm">Pandas</span>
-                            <span class="px-2 py-1 bg-pink-500/20 text-pink-400 rounded-full text-xs md:text-sm">Matplotlib</span>
+                    <div class="project-content">
+                        <h3>Analyse de Données</h3>
+                        <p>Scripts Python pour l'analyse et la visualisation de jeux de données.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Pandas</span>
+                            <span class="tag">Matplotlib</span>
                         </div>
-                        <button class="text-blue-400 font-semibold hover:text-blue-300 transition-colors text-sm md:text-base">Voir le projet →</button>
+                        <button class="btn btn-outline" style="margin-top: 1rem;">Voir le projet →</button>
                     </div>
                 </div>
-                <div class="group bg-gray-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-purple-500/20 transition-all transform hover:-translate-y-2">
-                    <div class="h-40 md:h-48 bg-gradient-to-br from-orange-500 to-red-600 relative overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-robot text-white/20 text-4xl md:text-6xl"></i>
-                        </div>
+                
+                <div class="project-card animate">
+                    <div class="project-image">
+                        <i class="fas fa-robot"></i>
                     </div>
-                    <div class="p-4 md:p-6">
-                        <h3 class="text-lg md:text-xl font-bold mb-2">Projet IA Futur</h3>
-                        <p class="text-gray-400 text-sm md:text-base mb-4">Modèle de machine learning pour la classification d'images (en préparation).</p>
-                        <div class="flex flex-wrap gap-1 md:gap-2 mb-4">
-                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs md:text-sm">Python</span>
-                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs md:text-sm">TensorFlow</span>
-                            <span class="px-2 py-1 bg-pink-500/20 text-pink-400 rounded-full text-xs md:text-sm">OpenCV</span>
+                    <div class="project-content">
+                        <h3>Projet IA Futur</h3>
+                        <p>Modèle de machine learning pour la classification d'images (en préparation).</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">OpenCV</span>
                         </div>
-                        <button class="text-blue-400 font-semibold hover:text-blue-300 transition-colors text-sm md:text-base">Bientôt disponible →</button>
+                        <button class="btn btn-outline" style="margin-top: 1rem;">Bientôt disponible →</button>
                     </div>
                 </div>
             </div>
@@ -612,53 +951,182 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-16 md:py-20 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 px-4">
-                Travaillons <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Ensemble</span>
-            </h2>
-            <p class="text-lg md:text-xl text-gray-400 mb-8 md:mb-12 px-4">
-                Un projet en tête ? N'hésitez pas à me contacter pour en discuter !
-            </p>
-            <div class="bg-gray-800 rounded-3xl p-6 md:p-8 lg:p-12 border border-gray-700">
-                <form action="https://formsubmit.co/magellandevoue@email.com" method="POST" class="space-y-4 md:space-y-6">
-                    <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-                        <input type="text" name="name" placeholder="Votre nom" required class="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-900 border border-gray-700 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm md:text-base">
-                        <input type="email" name="email" placeholder="Votre email" required class="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-900 border border-gray-700 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm md:text-base">
+    <section id="contact" class="about">
+        <div class="container">
+            <h2>Travaillons <span class="gradient-text">Ensemble</span></h2>
+            <p class="text-center mb-8">Un projet en tête ? N'hésitez pas à me contacter pour en discuter !</p>
+            
+            <div class="contact-form animate">
+                <form action="https://formsubmit.co/magellandevoue@email.com" method="POST">
+                    <div class="form-group">
+                        <label for="name">Votre nom</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
-                    <input type="text" name="subject" placeholder="Sujet" class="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-900 border border-gray-700 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm md:text-base">
-                    <textarea rows="4" name="message" placeholder="Votre message" required class="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-900 border border-gray-700 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm md:text-base"></textarea>
-                    <!-- FormSubmit anti-spam -->
+                    
+                    <div class="form-group">
+                        <label for="email">Votre email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Sujet</label>
+                        <input type="text" id="subject" name="subject">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Votre message</label>
+                        <textarea id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    
                     <input type="hidden" name="_captcha" value="false">
-                    <!-- Redirect after success -->
                     <input type="hidden" name="_next" value="https://abdallah924-coder.github.io/mon-portfolio/index.html">
-                    <button type="submit" class="w-full px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105 text-sm md:text-base">
-                        Envoyer le message
-                    </button>
+                    
+                    <button type="submit" class="btn">Envoyer le message</button>
                 </form>
             </div>
-            <div class="mt-8 md:mt-12 flex justify-center space-x-4 md:space-x-6">
-                <a href="mailto:magellandevoue@email.com" class="text-gray-400 hover:text-blue-400 transition-colors">
-                    <i class="fas fa-envelope text-xl md:text-2xl"></i>
+            
+            <div class="social-links" style="margin-top: 3rem;">
+                <a href="mailto:magellandevoue@email.com">
+                    <i class="fas fa-envelope"></i>
                 </a>
-                <a href="tel:+242 06 922 72 77" class="text-gray-400 hover:text-purple-400 transition-colors">
-                    <i class="fas fa-phone text-xl md:text-2xl"></i>
+                <a href="tel:+242 06 922 72 77">
+                    <i class="fas fa-phone"></i>
                 </a>
-                <a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">
-                    <i class="fas fa-map-marker-alt text-xl md:text-2xl"></i>
+                <a href="#">
+                    <i class="fas fa-map-marker-alt"></i>
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-6 md:py-8 px-4 border-t border-gray-800">
-        <div class="max-w-6xl mx-auto text-center">
-            <p class="text-gray-400 text-sm md:text-base">© 2025 Devoue. Tous droits réservés.</p>
+    <footer>
+        <div class="container">
+            <p>© 2025 Devoue. Tous droits réservés.</p>
         </div>
     </footer>
 
-    <!-- Scripts modulaires -->
-    <script type="module" src="js/app.js"></script>
+    <script>
+        // Menu Hamburger
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu a');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', closeMobileMenu);
+        menuOverlay.addEventListener('click', closeMobileMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Smooth scroll pour les ancres
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Animation au scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+        
+        // Observer les éléments à animer
+        document.querySelectorAll('.animate').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Navigation active
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a, .mobile-menu a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Animation du hamburger
+        hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+        
+        // Styles pour le hamburger actif
+        const style = document.createElement('style');
+        style.textContent = `
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+            }
+            
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+            }
+            
+            .mobile-menu a.active {
+                background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+                color: white;
+            }
+            
+            .nav-links a.active {
+                color: var(--primary-blue);
+            }
+            
+            .nav-links a.active::after {
+                width: 100%;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
